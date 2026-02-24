@@ -1,0 +1,59 @@
+stages:
+  - lint
+  - test
+  - build
+
+variables:
+  POSTGRES_DB: oms
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  DATABASE_URL: postgresql://postgres:postgres@postgres:5432/oms
+  SECRET_KEY: generate_a_real_64_char_key_here
+  ALGORITHM: HS256
+  ACCESS_TOKEN_EXPIRE_MINUTES: 60
+
+cache:
+  paths:
+    - .cache/pip
+
+before_script:
+  - python -V
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+
+lint:
+  stage: lint
+  image: python:3.11
+  script:
+    - pip install ruff
+    - ruff check .
+  only:
+    - merge_requests
+    - main
+
+test:
+  stage: test
+  image: python:3.11
+  services:
+    - name: postgres:15
+      alias: postgres
+  script:
+    - alembic upgrade head
+    - pytest
+  only:
+    - merge_requests
+    - main
+
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - main

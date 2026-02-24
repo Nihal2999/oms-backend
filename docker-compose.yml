@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:15
+    container_name: oms_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: oms
+      TZ: Asia/Kolkata
+      PGTZ: Asia/Kolkata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: oms_backend
+    restart: always
+    depends_on:
+      db: 
+        condition: service_healthy
+    env_file:
+      - .env.docker
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

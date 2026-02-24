@@ -1,0 +1,56 @@
+from sqlalchemy.orm import Session
+from app.models.product import Product
+
+class ProductRepository:
+    
+    def __init__(self, db: Session):
+        self.db = db
+
+
+    def create(self, data: dict):
+        product = Product(**data)
+        self.db.add(product)
+        self.db.commit()
+        self.db.refresh(product)
+        return product
+
+
+    def get_by_id(self, product_id: int, include_deleted: bool = False):
+        query = self.db.query(Product).filter(Product.id == product_id)
+
+        if not include_deleted:
+            query = query.filter(Product.is_deleted == False)
+
+        return query.first()
+
+
+    def get_all(self, skip: int, limit: int, search: str | None):
+        query = self.db.query(Product).filter(Product.is_deleted == False)
+
+        if search:
+            query = query.filter(Product.name.ilike(f"%{search}%"))
+
+        query = query.order_by(Product.id.desc())
+
+        return query.offset(skip).limit(limit).all()
+
+
+    def update(self, product: Product, update_data: dict):
+        for key, value in update_data.items():
+            setattr(product, key, value)
+
+        self.db.commit()
+        self.db.refresh(product)
+        return product
+
+
+    def soft_delete(self, product: Product):
+        product.is_deleted = True
+        self.db.commit()
+
+
+    def restore(self, product: Product):
+        product.is_deleted = False
+        self.db.commit()
+        self.db.refresh(product)
+        return product
