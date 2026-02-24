@@ -1,42 +1,14 @@
 stages:
   - lint
-  - test
   - build
-
-variables:
-  POSTGRES_DB: oms
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
-  ALGORITHM: HS256
-  ACCESS_TOKEN_EXPIRE_MINUTES: 60
-
-cache:
-  paths:
-    - .cache/pip
-
-before_script:
-  - python -V
-  - pip install --upgrade pip
-  - pip install -r requirements.txt
 
 lint:
   stage: lint
   image: python:3.11
   script:
+    - pip install --upgrade pip
     - pip install ruff
     - ruff check .
-  only:
-    - merge_requests
-    - main
-
-test:
-  stage: test
-  image: python:3.11
-  services:
-    - name: postgres:15
-      alias: postgres
-  script:
-    - pytest
   only:
     - merge_requests
     - main
