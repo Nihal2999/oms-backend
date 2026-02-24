@@ -277,7 +277,7 @@ class TestConcurrentOrderCreation:
         db.refresh(product)
 
         # Store IDs after commit
-        user_ids = [user1.id, user2.id]
+        # user_ids = [user1.id, user2.id]
         product_id = product.id
 
         # Track results
