@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from app.services.product_service import ProductService
 from app.repository.product import ProductRepository
 from app.db.database import get_db

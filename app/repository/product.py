@@ -19,13 +19,13 @@ class ProductRepository:
         query = self.db.query(Product).filter(Product.id == product_id)
 
         if not include_deleted:
-            query = query.filter(Product.is_deleted == False)
+            query = query.filter(not Product.is_deleted)
 
         return query.first()
 
 
     def get_all(self, skip: int, limit: int, search: str | None):
-        query = self.db.query(Product).filter(Product.is_deleted == False)
+        query = self.db.query(Product).filter(not Product.is_deleted)
 
         if search:
             query = query.filter(Product.name.ilike(f"%{search}%"))

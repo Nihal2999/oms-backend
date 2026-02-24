@@ -1,8 +1,6 @@
 from app.services.product_service import ProductService
 from app.repository.product import ProductRepository
 from app.schemas.product import ProductCreate
-import pytest
-
 
 def test_create_product_service(db):
     repo = ProductRepository(db)
