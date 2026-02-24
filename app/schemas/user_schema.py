@@ -3,18 +3,13 @@ from typing import Optional
 
 
 class UserCreate(BaseModel):
-    name: str
+    name: str = Field(min_length=1, max_length=100)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-
 class UserUpdate(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = Field(default=None, min_length=1, max_length=100)
     email: Optional[EmailStr] = None
 
 

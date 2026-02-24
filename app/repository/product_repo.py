@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
-from app.models.product import Product
+from app.models.product_model import Product
 
 class ProductRepository:
-    
+
     def __init__(self, db: Session):
         self.db = db
 
 
-    def create(self, data: dict):
+    def create(self, data: dict) -> Product:
         product = Product(**data)
         self.db.add(product)
         self.db.commit()
@@ -15,17 +15,17 @@ class ProductRepository:
         return product
 
 
-    def get_by_id(self, product_id: int, include_deleted: bool = False):
+    def get_by_id(self, product_id: int, include_deleted: bool = False) -> Product | None:
         query = self.db.query(Product).filter(Product.id == product_id)
 
         if not include_deleted:
-            query = query.filter(not Product.is_deleted)
+            query = query.filter(Product.is_deleted == False)
 
         return query.first()
 
 
-    def get_all(self, skip: int, limit: int, search: str | None):
-        query = self.db.query(Product).filter(not Product.is_deleted)
+    def get_all(self, skip: int, limit: int, search: str | None) -> list[Product]:
+        query = self.db.query(Product).filter(Product.is_deleted == False)
 
         if search:
             query = query.filter(Product.name.ilike(f"%{search}%"))
@@ -35,7 +35,7 @@ class ProductRepository:
         return query.offset(skip).limit(limit).all()
 
 
-    def update(self, product: Product, update_data: dict):
+    def update(self, product: Product, update_data: dict) -> Product:
         for key, value in update_data.items():
             setattr(product, key, value)
 
@@ -44,12 +44,12 @@ class ProductRepository:
         return product
 
 
-    def soft_delete(self, product: Product):
+    def soft_delete(self, product: Product) -> None:
         product.is_deleted = True
         self.db.commit()
 
 
-    def restore(self, product: Product):
+    def restore(self, product: Product) -> Product:
         product.is_deleted = False
         self.db.commit()
         self.db.refresh(product)

@@ -8,8 +8,9 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    name = Column(String, nullable=False)
-    description = Column(String)
+    name = Column(String(255), nullable=False)
+    
+    description = Column(String(1000), nullable=True)
 
     price = Column(Numeric(10, 2), nullable=False)
 
@@ -17,4 +18,4 @@ class Product(Base):
 
     is_deleted = Column(Boolean, default=False, nullable=False, index=True)
 
-    orders = relationship("Order", back_populates="product")
+    orders = relationship("Order", back_populates="product", cascade="all, delete-orphan")

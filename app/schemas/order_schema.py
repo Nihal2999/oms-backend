@@ -1,6 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from app.models.order import OrderStatus
-
+from app.models.order_model import OrderStatus
 
 class OrderCreate(BaseModel):
     product_id: int

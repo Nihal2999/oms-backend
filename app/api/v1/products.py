@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from app.services.product_service import ProductService
-from app.repository.product import ProductRepository
+from app.repository.product_repo import ProductRepository
 from app.db.database import get_db
-from app.schemas.product import ProductCreate, ProductResponse, ProductUpdate
-from app.models.user import User
+from app.schemas.product_schema import ProductCreate, ProductResponse, ProductUpdate
+from app.models.user_model import User
 from app.core.security import get_admin_user
 
 router = APIRouter(prefix="/products", tags=["Products"])

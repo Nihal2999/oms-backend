@@ -9,8 +9,6 @@ services:
       POSTGRES_DB: oms
       TZ: Asia/Kolkata
       PGTZ: Asia/Kolkata
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,6 +26,11 @@ services:
         condition: service_healthy
     env_file:
       - .env.docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     ports:
       - "8000:8000"
 

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from app.services.order_service import OrderService
-from app.repository.order import OrderRepository
+from app.repository.order_repo import OrderRepository
 from app.db.database import get_db
-from app.schemas.order import OrderCreate, OrderResponse, OrderUpdate
+from app.schemas.order_schema import OrderCreate, OrderResponse, OrderUpdate
 from app.core.security import get_current_user, get_admin_user
-from app.models.user import User
+from app.models.user_model import User
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 

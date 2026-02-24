@@ -1,5 +1,6 @@
+from typing import Generator
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from app.core.config import settings
 
 DATABASE_URL = settings.DATABASE_URL
@@ -10,35 +11,42 @@ _engine = None
 _SessionLocal = None
 
 
-def get_engine():
+def initialize_db():
+    global _engine, _SessionLocal
+
+    _engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        echo=False,
+    )
+
+    _SessionLocal = sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=_engine,
+    )
+
+
+def shutdown_db():
     global _engine
 
-    if _engine is None:
-        _engine = create_engine(
-            DATABASE_URL,
-            pool_pre_ping=True,
-            echo=False,
-        )
-
-    return _engine
+    if _engine is not None:
+        _engine.dispose()
+        _engine = None
 
 
-def get_session_local():
-    global _SessionLocal
-
+def get_db() -> Generator[Session, None, None]:
     if _SessionLocal is None:
-        _SessionLocal = sessionmaker(
-            autocommit=False,
-            autoflush=False,
-            bind=get_engine(),
-        )
+        raise RuntimeError("Database not initialized. Call initialize_db() during app startup.")
 
-    return _SessionLocal
-
-
-def get_db():
-    db = get_session_local()()
+    db = _SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
-        db.close()
+        try:
+            db.close()
+        except Exception:
+            pass

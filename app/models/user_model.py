@@ -22,10 +22,11 @@ class User(Base):
 
     role = Column(
         Enum(UserRole),
-        default=UserRole.user,
+        default=lambda: UserRole.user,
+        server_default=UserRole.user.value,
         nullable=False
     )
 
-    orders = relationship("Order", back_populates="user")
-    
     phone = Column(String(20), nullable=True)
+
+    orders = relationship("Order", back_populates="user", cascade="all, delete-orphan")

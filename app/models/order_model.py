@@ -39,4 +39,5 @@ class Order(Base):
     )
 
     user = relationship("User", back_populates="orders")
+
     product = relationship("Product", back_populates="orders")

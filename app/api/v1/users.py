@@ -1,21 +1,19 @@
 from fastapi import APIRouter, Depends
 from app.services.user_service import UserService
-from app.schemas.user import UserCreate, UserResponse, UserUpdate
-from app.models.user import User
+from app.schemas.user_schema import UserCreate, UserResponse, UserUpdate
+from app.models.user_model import User
 from app.db.database import get_db
-from app.repository.user import UserRepository
+from app.repository.user_repo import UserRepository
 from app.core.security import get_current_user, get_admin_user
 from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-# Dependency Injection
 def get_user_service(db = Depends(get_db)):
     return UserService(UserRepository(db))
 
 
-# GET ALL USERS (Admin only)
 @router.get("/", response_model=list[UserResponse])
 def get_users(
     service: UserService = Depends(get_user_service),
@@ -24,13 +22,11 @@ def get_users(
     return service.get_all_users()
 
 
-# GET CURRENT USER
 @router.get("/me", response_model=UserResponse)
 def read_current_user(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-# GET USER BY ID
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(
     user_id: int,
@@ -40,7 +36,6 @@ def get_user(
     return service.get_user_by_id(user_id, current_user)
 
 
-# UPDATE USER
 @router.put("/{user_id}", response_model=UserResponse)
 def update_user(
     user_id: int,
@@ -51,7 +46,6 @@ def update_user(
     return service.update_user(user_id, user, current_user)
 
 
-# DELETE USER (Admin only)
 @router.delete("/{user_id}")
 def delete_user(
     user_id: int,
@@ -62,7 +56,6 @@ def delete_user(
     return {"message": "User deleted successfully"}
 
 
-# REGISTER
 @router.post("/register", response_model=UserResponse)
 def register_user(
     user: UserCreate,
@@ -71,7 +64,6 @@ def register_user(
     return service.register_user(user)
 
 
-# LOGIN
 @router.post("/login")
 def login_user(
     form_data: OAuth2PasswordRequestForm = Depends(),
