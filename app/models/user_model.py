@@ -27,6 +27,4 @@ class User(Base):
         nullable=False
     )
 
-    phone = Column(String(20), nullable=True)
-
     orders = relationship("Order", back_populates="user", cascade="all, delete-orphan")
