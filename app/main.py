@@ -39,6 +39,8 @@ app = FastAPI(
     title="OMS - Order Management System",
     description="Backend API for OMS built with FastAPI",
     lifespan=lifespan,
+    docs_url="/openmyapi",
+    redoc_url="/test",
 )
 
 
