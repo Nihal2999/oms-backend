@@ -22,7 +22,6 @@ class OrderRepository:
             self.db.query(Order)
             .options(joinedload(Order.product))
             .filter(Order.id == order_id)
-            .with_for_update()
             .first()
         )
 

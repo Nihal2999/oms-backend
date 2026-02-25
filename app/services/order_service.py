@@ -62,15 +62,7 @@ class OrderService:
             )
 
         if new_status == OrderStatus.cancelled:
-            
-            product = self.repository.get_product_for_update(order.product_id)
-
-            if not product:
-                raise ProductNotFoundException(400, "Product for this order does not exist")
-
-            product.stock = product.stock + order.quantity
-
-        #    order.product.stock += order.quantity
+            order.product.stock += order.quantity
             logger.info(f"Order status updated to CANCELLED - OrderID: {order_id}, stock restored: {order.quantity}")
         else:
             logger.info(f"Order status updated - OrderID: {order_id}, new status: {new_status.value}")
