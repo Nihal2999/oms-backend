@@ -66,7 +66,7 @@ class OrderService:
             product = self.repository.get_product_for_update(order.product_id)
 
             if not product:
-                raise HTTPException(400, "Product for this order does not exist")
+                raise ProductNotFoundException(400, "Product for this order does not exist")
 
             product.stock = product.stock + order.quantity
 
