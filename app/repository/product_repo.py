@@ -1,4 +1,3 @@
-from re import search
 from sqlalchemy.orm import Session
 from app.models.product_model import Product
 
