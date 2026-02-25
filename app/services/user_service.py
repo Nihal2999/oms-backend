@@ -16,28 +16,11 @@ class UserService:
 
     def __init__(self, repository: UserRepository):
         self.repository = repository
-
-
-    def get_all_users(self):
-        return self.repository.get_all()
-
-
-    def get_user_by_id(self, user_id: int, current_user):
-        user = self.repository.get_by_id(user_id)
-        if not user:
-            logger.warning(f"Get user attempt for non-existent user: {user_id}")
-            raise UserNotFoundException("User not found")
-
-        if current_user.role != UserRole.admin and current_user.id != user_id:
-            logger.warning(f"Unauthorized user access attempt: user {current_user.id} tried to access user {user_id}")
-            raise UnauthorizedException("Not authorized")
-
-        logger.info(f"User {user_id} retrieved by user {current_user.id}")
-        return user
-
-
+        
+        
     def register_user(self, user_data: UserCreate):
         existing = self.repository.get_by_email(user_data.email)
+        
         if existing:
             logger.warning(f"Registration attempt with existing email: {user_data.email}")
             raise UserAlreadyExistsException("Email already registered")
@@ -58,6 +41,24 @@ class UserService:
         token = create_access_token(user)
         logger.info(f"User logged in successfully - ID: {user.id}, Email: {email}")
         return {"access_token": token, "token_type": "bearer"}
+
+
+    def get_all_users(self):
+        return self.repository.get_all()
+
+
+    def get_user_by_id(self, user_id: int, current_user):
+        user = self.repository.get_by_id(user_id)
+        if not user:
+            logger.warning(f"Get user attempt for non-existent user: {user_id}")
+            raise UserNotFoundException("User not found")
+
+        if current_user.role != UserRole.admin and current_user.id != user_id:
+            logger.warning(f"Unauthorized user access attempt: user {current_user.id} tried to access user {user_id}")
+            raise UnauthorizedException("Not authorized")
+
+        logger.info(f"User {user_id} retrieved by user {current_user.id}")
+        return user
 
 
     def update_user(self, user_id: int, update_data: UserUpdate, current_user):

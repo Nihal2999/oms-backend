@@ -19,7 +19,7 @@ from app.core.exceptions import (
     UserAlreadyExistsException,
     InvalidCredentialsException,
     UnauthorizedException,
-    ProductNotDeletedException,
+    ProductNotDeletedException
 )
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ app = FastAPI(
     title="OMS - Order Management System",
     description="Backend API for OMS built with FastAPI",
     lifespan=lifespan,
-    docs_url="/openmyapi",
+    docs_url="/api",
     redoc_url="/test",
 )
 

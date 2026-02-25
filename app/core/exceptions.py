@@ -21,11 +21,8 @@ class OrderAlreadyCancelledException(Exception):
 
 class InvalidOrderStatusTransitionException(Exception):
     pass
-
-
 class ProductNotDeletedException(Exception):
     pass
-
 
 class UnauthorizedException(Exception):
     pass

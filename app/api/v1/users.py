@@ -14,6 +14,22 @@ def get_user_service(db = Depends(get_db)):
     return UserService(UserRepository(db))
 
 
+@router.post("/register", response_model=UserResponse)
+def register_user(
+    user: UserCreate,
+    service: UserService = Depends(get_user_service),
+):
+    return service.register_user(user)
+
+
+@router.post("/login")
+def login_user(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    service: UserService = Depends(get_user_service),
+):
+    return service.login_user(form_data.username, form_data.password)
+
+
 @router.get("/", response_model=list[UserResponse])
 def get_users(
     service: UserService = Depends(get_user_service),
@@ -54,19 +70,3 @@ def delete_user(
 ):
     service.delete_user(user_id)
     return {"message": "User deleted successfully"}
-
-
-@router.post("/register", response_model=UserResponse)
-def register_user(
-    user: UserCreate,
-    service: UserService = Depends(get_user_service),
-):
-    return service.register_user(user)
-
-
-@router.post("/login")
-def login_user(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    service: UserService = Depends(get_user_service),
-):
-    return service.login_user(form_data.username, form_data.password)

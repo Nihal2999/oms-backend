@@ -26,6 +26,14 @@ def create_order(
     )
 
 
+@router.get("/", response_model=list[OrderResponse])
+def get_all_orders(
+    service: OrderService = Depends(get_order_service),
+    current_user: User = Depends(get_admin_user),
+):
+    return service.get_all_orders()
+
+
 @router.get("/me", response_model=list[OrderResponse])
 def get_my_orders(
     service: OrderService = Depends(get_order_service),
@@ -34,12 +42,13 @@ def get_my_orders(
     return service.get_my_orders(current_user.id)
 
 
-@router.get("/", response_model=list[OrderResponse])
-def get_all_orders(
+@router.post("/{order_id}/pay", response_model=OrderResponse)
+def pay_order(
+    order_id: int,
     service: OrderService = Depends(get_order_service),
-    current_user: User = Depends(get_admin_user),
+    current_user: User = Depends(get_current_user),
 ):
-    return service.get_all_orders()
+    return service.pay_order(order_id)
 
 
 @router.put("/{order_id}", response_model=OrderResponse)
