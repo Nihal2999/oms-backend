@@ -24,13 +24,12 @@ def create_product(
 
 @router.get("/", response_model=list[ProductResponse])
 def get_products(
-    # skip: int = 0,
-    # limit: int = 10,
-    # search: str | None = None,
+    skip: int = 0,
+    limit: int = 10,
+    search: str | None = None,
     service: ProductService = Depends(get_product_service),
 ):
-    # return service.get_products(skip, limit, search)
-    return service.get_products()
+    return service.get_products(skip, limit, search)
 
 
 @router.get("/{product_id}", response_model=ProductResponse)

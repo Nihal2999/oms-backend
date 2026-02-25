@@ -20,11 +20,8 @@ class ProductService:
         return product
 
 
-    # def get_products(self, skip: int, limit: int, search: str | None):
-    #     return self.repository.get_all(skip, limit, search)
-
-    def get_products(self):
-        return self.repository.get_all()
+    def get_products(self, skip: int, limit: int, search: str | None):
+        return self.repository.get_all(skip, limit, search)
 
 
     def get_product(self, product_id: int):

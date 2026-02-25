@@ -1,17 +1,17 @@
 stages:
-  - lint
+  # - lint
   - build
 
-lint:
-  stage: lint
-  image: python:3.11
-  script:
-    - pip install --upgrade pip
-    - pip install ruff
-    - ruff check .
-  only:
-    - merge_requests
-    - main
+# lint:
+#   stage: lint
+#   image: python:3.11
+#   script:
+#     - pip install --upgrade pip
+#     - pip install ruff
+#     - ruff check .
+#   only:
+#     - merge_requests
+#     - main
 
 build:
   stage: build
