@@ -23,7 +23,7 @@ class ProductService:
     # def get_products(self, skip: int, limit: int, search: str | None):
     #     return self.repository.get_all(skip, limit, search)
 
-    def get_products():
+    def get_products(self):
         return self.repository.get_all()
 
 
