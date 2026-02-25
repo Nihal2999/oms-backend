@@ -1,3 +1,4 @@
+from re import search
 from sqlalchemy.orm import Session
 from app.models.product_model import Product
 
@@ -31,8 +32,15 @@ class ProductRepository:
             query = query.filter(Product.name.ilike(f"%{search}%"))
 
         query = query.order_by(Product.id.desc())
-
         return query.offset(skip).limit(limit).all()
+    
+    
+    def count_all(self, search: str | None) -> int:
+        query = self.db.query(Product).filter(Product.is_deleted.is_(False))
+        
+        if search:
+            query = query.filter(Product.name.ilike(f"%{search}%"))
+        return query.count()
 
 
     def update(self, product: Product, update_data: dict) -> Product:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from app.services.user_service import UserService
 from app.schemas.user_schema import UserCreate, UserResponse, UserUpdate
 from app.models.user_model import User
@@ -6,6 +6,7 @@ from app.db.database import get_db
 from app.repository.user_repo import UserRepository
 from app.core.security import get_current_user, get_admin_user
 from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.pagination import PaginatedResponse
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -30,12 +31,14 @@ def login_user(
     return service.login_user(form_data.username, form_data.password)
 
 
-@router.get("/", response_model=list[UserResponse])
+@router.get("/", response_model=PaginatedResponse[UserResponse])
 def get_users(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
     service: UserService = Depends(get_user_service),
     current_user: User = Depends(get_admin_user)
 ):
-    return service.get_all_users()
+    return service.get_all_users(page, limit)
 
 
 @router.get("/me", response_model=UserResponse)

@@ -2,6 +2,7 @@ import logging
 from app.models.order_model import OrderStatus
 from app.models.user_model import UserRole
 from app.repository.order_repo import OrderRepository
+from app.schemas.pagination import PaginatedResponse
 from app.core.exceptions import (
     OrderNotFoundException,
     ProductNotFoundException,
@@ -9,6 +10,7 @@ from app.core.exceptions import (
     OrderAlreadyCancelledException,
     InvalidOrderStatusTransitionException,
 )
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,12 +38,18 @@ class OrderService:
         return order
 
 
-    def get_my_orders(self, user_id: int):
-        return self.repository.get_by_user(user_id)
+    def get_all_orders(self, page: int, limit: int):
+        skip = (page - 1) * limit
+        data = self.repository.get_all(skip, limit)
+        total = self.repository.count_all()
+        return PaginatedResponse.create(data, total, page, limit)
 
 
-    def get_all_orders(self):
-        return self.repository.get_all()
+    def get_my_orders(self, user_id: int, page: int, limit: int):
+        skip = (page - 1) * limit
+        data = self.repository.get_by_user(user_id, skip, limit)
+        total = self.repository.count_by_user(user_id)
+        return PaginatedResponse.create(data, total, page, limit)
     
     
     def update_status(self, order_id: int, new_status: OrderStatus):

@@ -1,5 +1,6 @@
 import logging
 from app.repository.product_repo import ProductRepository
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.product_schema import ProductCreate, ProductUpdate
 from app.core.exceptions import (
     ProductNotFoundException,
@@ -20,8 +21,11 @@ class ProductService:
         return product
 
 
-    def get_products(self, skip: int, limit: int, search: str | None):
-        return self.repository.get_all(skip, limit, search)
+    def get_products(self, page: int, limit: int, search: str | None):
+        skip = (page - 1) * limit
+        data = self.repository.get_all(skip, limit, search)
+        total = self.repository.count_all(search)
+        return PaginatedResponse.create(data, total, page, limit)
 
 
     def get_product(self, product_id: int):

@@ -1,4 +1,5 @@
 import logging
+from app.schemas.pagination import PaginatedResponse
 from app.schemas.user_schema import UserCreate, UserUpdate
 from app.core.security import hash_password, verify_password, create_access_token
 from app.repository.user_repo import UserRepository
@@ -43,8 +44,11 @@ class UserService:
         return {"access_token": token, "token_type": "bearer"}
 
 
-    def get_all_users(self):
-        return self.repository.get_all()
+    def get_all_users(self, page: int, limit: int):
+        skip = (page - 1) * limit
+        data = self.repository.get_all(skip, limit)
+        total = self.repository.count_all()
+        return PaginatedResponse.create(data, total, page, limit)
 
 
     def get_user_by_id(self, user_id: int, current_user):

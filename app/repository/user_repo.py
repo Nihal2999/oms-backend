@@ -37,8 +37,12 @@ class UserRepository:
         return user
 
 
-    def get_all(self) -> list[User]:
-        return self.db.query(User).all()
+    def get_all(self, skip: int, limit: int) -> list[User]:
+        return self.db.query(User).offset(skip).limit(limit).all()
+
+
+    def count_all(self) -> int:
+        return self.db.query(User).count()
 
 
     def delete(self, user: User) -> None:

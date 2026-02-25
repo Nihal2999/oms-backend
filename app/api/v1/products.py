@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from app.services.product_service import ProductService
 from app.repository.product_repo import ProductRepository
 from app.db.database import get_db
 from app.schemas.product_schema import ProductCreate, ProductResponse, ProductUpdate
 from app.models.user_model import User
 from app.core.security import get_admin_user
+from app.schemas.pagination import PaginatedResponse
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -22,14 +23,14 @@ def create_product(
     return service.create_product(product)
 
 
-@router.get("/", response_model=list[ProductResponse])
+@router.get("/", response_model=PaginatedResponse[ProductResponse])
 def get_products(
-    skip: int = 0,
-    limit: int = 10,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
     search: str | None = None,
     service: ProductService = Depends(get_product_service),
 ):
-    return service.get_products(skip, limit, search)
+    return service.get_products(page, limit, search)
 
 
 @router.get("/{product_id}", response_model=ProductResponse)

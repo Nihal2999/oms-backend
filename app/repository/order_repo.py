@@ -26,16 +26,26 @@ class OrderRepository:
         )
 
 
-    def get_all(self) -> list[Order]:
-        return self.db.query(Order).all()
+    def get_all(self, skip: int, limit: int) -> list[Order]:
+        return self.db.query(Order).offset(skip).limit(limit).all()
 
 
-    def get_by_user(self, user_id: int) -> list[Order]:
+    def count_all(self) -> int:
+        return self.db.query(Order).count()
+
+
+    def get_by_user(self, user_id: int, skip: int, limit: int) -> list[Order]:
         return (
             self.db.query(Order)
             .filter(Order.user_id == user_id)
+            .offset(skip)
+            .limit(limit)
             .all()
         )
+
+
+    def count_by_user(self, user_id: int) -> int:
+        return self.db.query(Order).filter(Order.user_id == user_id).count()
 
 
     def get_product_for_update(self, product_id: int) -> Product | None:
