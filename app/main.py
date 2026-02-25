@@ -36,8 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Order Management System",
-    version="1.0.0",
+    title="OMS - Order Management System",
     description="Backend API for OMS built with FastAPI",
     lifespan=lifespan,
 )
