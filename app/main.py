@@ -8,6 +8,7 @@ from app.db.database import initialize_db, shutdown_db
 from app.api.v1.users import router as users_router
 from app.api.v1.products import router as products_router
 from app.api.v1.orders import router as orders_router
+from app.db.database import Base, _engine
 
 from app.core.exceptions import (
     ProductNotFoundException,
@@ -30,6 +31,7 @@ setup_logging()
 async def lifespan(app: FastAPI):
     logger.info("Starting OMS Backend application")
     initialize_db()
+    Base.metadata.create_all(bind=_engine)
     yield
     logger.info("Shutting down OMS Backend application")
     shutdown_db()
