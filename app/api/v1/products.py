@@ -29,7 +29,8 @@ def get_products(
     # search: str | None = None,
     service: ProductService = Depends(get_product_service),
 ):
-    return service.get_products(skip, limit, search)
+    # return service.get_products(skip, limit, search)
+    return service.get_products()
 
 
 @router.get("/{product_id}", response_model=ProductResponse)
