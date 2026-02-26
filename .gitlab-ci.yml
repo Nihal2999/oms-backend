@@ -18,8 +18,8 @@ test:
   stage: test
   image: python:3.11
   before_script:
-    - pip install pytest fastapi httpx
-    - export PYTHONPATH=$PYTHONPATH:$(pwd)
+    - pip install -r requirements.txt 
+    - pip install pytest
   script:
     - pytest
   only:
