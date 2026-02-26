@@ -45,6 +45,10 @@ app = FastAPI(
     redoc_url="/test",
 )
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 app.include_router(users_router, prefix="/api/v1")
 app.include_router(products_router, prefix="/api/v1")
