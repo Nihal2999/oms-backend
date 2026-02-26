@@ -38,16 +38,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="OMS - Order Management System",
-    description="Backend API for OMS built with FastAPI",
+    title="Order Management System",
+    description="Backend API built with FastAPI by ***Nihal Vernekar***",
     lifespan=lifespan,
-    docs_url="/api",
-    redoc_url="/test",
+    docs_url="/api"
 )
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+@app.get("/app")
+def open():
+    return {"status": "Welcome to OMS Backend API!"}
 
 
 app.include_router(users_router, prefix="/api/v1")
