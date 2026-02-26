@@ -1,5 +1,6 @@
 stages:
   - lint
+  - test
   - build
 
 lint:
@@ -11,6 +12,16 @@ lint:
     - ruff check .
   only:
     - merge_requests
+    - main
+
+test:
+  stage: test
+  image: python:3.11
+  script:
+    - pip install -r requirements.txt
+    - pip install pytest
+    - pytest
+  only:
     - main
 
 build:

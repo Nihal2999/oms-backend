@@ -24,13 +24,13 @@ def create_product(
 
 
 @router.get("/", response_model=PaginatedResponse[ProductResponse])
-def get_products(
+def get_all_products(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=100),
     search: str | None = None,
     service: ProductService = Depends(get_product_service),
 ):
-    return service.get_products(page, limit, search)
+    return service.get_all_products(page, limit, search)
 
 
 @router.get("/{product_id}", response_model=ProductResponse)

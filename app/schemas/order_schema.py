@@ -16,5 +16,4 @@ class OrderResponse(BaseModel):
     product_id: int
     quantity: int
     status: OrderStatus
-
     model_config = ConfigDict(from_attributes=True)

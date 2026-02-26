@@ -30,10 +30,8 @@ setup_logging()
 async def lifespan(app: FastAPI):
     logger.info("Starting OMS Backend application")
     initialize_db()
-    
     from app.db.database import Base, _engine
     Base.metadata.create_all(bind=_engine)
-    
     yield
     logger.info("Shutting down OMS Backend application")
     shutdown_db()
@@ -106,11 +104,7 @@ async def unauthorized_handler(request: Request, exc: UnauthorizedException):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.exception(f"Unhandled error: {str(exc)}")
-
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Internal Server Error"},
-    )
+    return JSONResponse(status_code=500,content={"detail": "Internal Server Error"},)
 
 
 allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",")]

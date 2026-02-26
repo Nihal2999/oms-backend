@@ -23,5 +23,4 @@ class ProductResponse(BaseModel):
     description: Optional[str]
     price: Decimal
     stock: int
-
     model_config = ConfigDict(from_attributes=True)

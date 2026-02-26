@@ -28,3 +28,5 @@ class User(Base):
     )
 
     orders = relationship("Order", back_populates="user", cascade="all, delete-orphan")
+    
+    refresh_token = Column(String, nullable=True)

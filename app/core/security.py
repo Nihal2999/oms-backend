@@ -10,10 +10,7 @@ from app.core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/api/v1/users/login"
-)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/login")
 
 
 def hash_password(password: str) -> str:
@@ -29,6 +26,17 @@ def create_access_token(user: User) -> str:
     payload = {
         "sub": str(user.id),
         "role": user.role.value,
+        "type": "access",
+        "exp": expire,
+    }
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def create_refresh_token(user: User) -> str:
+    expire = datetime.utcnow() + timedelta(days=7)
+    payload = {
+        "sub": str(user.id),
+        "type": "refresh",
         "exp": expire,
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
@@ -43,12 +51,12 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id: str = payload.get("sub")
+        token_type: str = payload.get("type")
 
-        if user_id is None:
+        if user_id is None or token_type != "access":
             raise credentials_exception
 
         user_id_int = int(user_id)
@@ -56,10 +64,8 @@ def get_current_user(
         raise credentials_exception
 
     user = db.query(User).filter(User.id == user_id_int).first()
-
     if user is None:
         raise credentials_exception
-
     return user
 
 

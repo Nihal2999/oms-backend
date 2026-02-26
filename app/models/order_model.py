@@ -35,7 +35,8 @@ class Order(Base):
     status = Column(
         Enum(OrderStatus),
         default=OrderStatus.pending,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     user = relationship("User", back_populates="orders")

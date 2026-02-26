@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 T = TypeVar("T")
 
-
 class PageParams(BaseModel):
     page: int = 1
     limit: int = 10
