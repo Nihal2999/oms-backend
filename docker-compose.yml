@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:15
     container_name: oms_db
-    restart: always
+    restart: "no"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -22,7 +22,7 @@ services:
   backend:
     build: .
     container_name: oms_backend
-    restart: always
+    restart: "no"
     depends_on:
       db:
         condition: service_healthy
